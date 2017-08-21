@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.ShoppingCartMapper">
+	
+	<insert id="insert_cart" useGeneratedKeys="true" keyColumn="id"
+		keyProperty="id" parameterType="com.atguigu.bean.T_MALL_SHOPPINGCAR">
+		insert into t_mall_shoppingCar
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="sku_mch!=null">sku_mch,</if>
+		    <if test="sku_jg!=null">sku_jg,</if>
+		    <if test="tjshl!=null">tjshl,</if>
+		    <if test="hj!=null">hj,</if>
+		    <if test="yh_id!=null">yh_id,</if>
+		    <if test="shp_id!=null">shp_id,</if>
+		    <if test="sku_id!=null">sku_id,</if>
+		    <if test="shp_tp!=null">shp_tp,</if>
+		    <if test="shfxz!=null">shfxz,</if>
+		    <if test="kcdz!=null">kcdz,</if>
+		</trim>
+		values
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="sku_mch!=null">#{sku_mch},</if>
+		    <if test="sku_jg!=null">#{sku_jg},</if>
+		    <if test="tjshl!=null">#{tjshl},</if>
+		    <if test="hj!=null">#{hj},</if>
+		    <if test="yh_id!=null">#{yh_id},</if>
+		    <if test="shp_id!=null">#{shp_id},</if>
+		    <if test="sku_id!=null">#{sku_id},</if>
+		    <if test="shp_tp!=null">#{shp_tp},</if>
+		    <if test="shfxz!=null">#{shfxz},</if>
+		    <if test="kcdz!=null">#{kcdz},</if>
+		</trim>
+	</insert>
+	
+	<update id="update_cart_2" parameterType="com.atguigu.bean.T_MALL_SHOPPINGCAR">
+		update t_mall_shoppingCar
+		<set>
+			<if test="shfxz!=null and shfxz!=''">
+				shfxz=#{shfxz},
+			</if>
+			<if test="tjshl!=-1">
+				tjshl = #{tjshl},
+			</if>
+			<if test="hj!=null and hj!=''">
+				hj = #{hj},
+			</if>
+		</set>
+		<where>
+			<if test="id!=0">
+				and id = #{id}
+			</if>
+			<if test="sku_id!=0">
+				and sku_id = #{sku_id}
+			</if>
+		</where>
+	</update>
+	<update id="update_cart" parameterType="com.atguigu.bean.T_MALL_SHOPPINGCAR">
+		update t_mall_shoppingCar
+		<set>
+			<if test="tjshl!=0">
+				tjshl = #{tjshl},
+			</if>
+			<if test="hj!=0">
+				hj = #{hj},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="select_list_cart_by_user_id" parameterType="int"
+		resultType="com.atguigu.bean.T_MALL_SHOPPINGCAR">
+		select * from t_mall_shoppingCar where yh_id = #{yh_id}
+	</select>
+	
+	<delete id="delete_cart">
+		delete from t_mall_shoppingCar where sku_id=#{sku_id} and id = #{id}
+	</delete>
+
+</mapper>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.OrderMapper">
+	
+	<select id="select_sku_kc" parameterType="com.atguigu.bean.T_MALL_ORDER_INFO"
+		resultType="int">
+		select kc - #{sku_shl} from t_mall_sku where id = #{sku_id}
+		for update
+	</select>
+	
+	<update id="update_sku_kc" parameterType="com.atguigu.bean.T_MALL_ORDER_INFO">
+		update t_mall_sku set
+		kc = kc - #{sku_shl},sku_xl = sku_xl + #{sku_shl}
+		where id = #{sku_id}
+	</update>
+	
+	<update id="update_order" parameterType="com.atguigu.bean.T_MALL_ORDER">
+		update T_MALL_ORDER
+		<set>
+			<if test="jdh!=0">
+				jdh = #{jdh},
+			</if>
+			<if test="yjsdshj!=null">
+				yjsdshj = #{yjsdshj},
+			</if>
+		</set>
+		<where>
+			<if test="id != 0">
+				and id = #{id}
+			</if>
+		</where>
+	</update>
+	
+	<update id="update_flow" parameterType="com.atguigu.bean.T_MALL_FLOW">
+		update t_mall_flow
+		<set>
+			<if test="psfsh != null">
+				psfsh = #{psfsh},
+			</if>
+
+			<if test="psshj != null">
+				psshj = #{psshj},
+			</if>
+
+			<if test="psmsh != null">
+				psmsh = #{psmsh},
+			</if>
+
+			<if test="mqdd != null">
+				mqdd = #{mqdd},
+			</if>
+
+			<if test="ywy != null">
+				ywy = #{ywy},
+			</if>
+
+			<if test="lxfsh != null">
+				lxfsh = #{lxfsh},
+			</if>
+		</set>
+		where
+		dd_id = #{dd_id}
+	</update>
+	
+	
+	<insert id="insert_order" parameterType="com.atguigu.bean.OBJECT_T_MALL_ORDER" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into t_mall_order
+		(
+			shhr,
+			zje,
+			jdh,
+			yh_id,
+			dzh_id,
+			dzh_mch
+		)
+		values
+		(
+			#{shhr},
+			#{zje},
+			#{jdh},
+			#{yh_id},
+			#{dzh_id},
+			#{dzh_mch}
+		)
+	</insert>
+	
+	<insert id="insert_order_infos" parameterType="list">
+		insert into t_mall_order_info
+		(
+			dd_id,
+			sku_id,
+			sku_mch,
+			shp_tp,
+			sku_jg,
+			sku_shl,
+			sku_kcdz,
+			gwch_id
+		)
+		values
+		<foreach collection="list" item="info" separator=",">
+		(
+			#{info.dd_id},
+			#{info.sku_id},
+			#{info.sku_mch},
+			#{info.shp_tp},
+			#{info.sku_jg},
+			#{info.sku_shl},
+			#{info.sku_kcdz},
+			#{info.gwch_id}
+		)
+		</foreach>
+	</insert>
+	
+	<insert id="insert_flow">
+		insert into t_mall_flow
+		(
+			yh_id,
+			dd_id,
+			mdd
+		)
+		values
+		(
+			#{yh_id},
+			#{dd_id},
+			#{mdd}
+		)
+	</insert>
+	<delete id="delete_cart" parameterType="list">
+		delete from t_mall_shoppingcar where id in
+		(
+			<foreach collection="list" item="id" separator=",">
+				#{id}
+			</foreach>
+		)
+	</delete>
+</mapper>

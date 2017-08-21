@@ -1,0 +1,111 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@page isELIgnored="false"  %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<base href="<%=basePath %>">
+<script type="text/javascript" src="jquery/jquery-1.7.2.min.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript">
+	$(function(){
+		
+	});
+	//移除筛选条件
+	function search_parm_down(obj,shxm_id){
+		alert("param down...");
+		$(obj).remove();
+		$("#search_attr_"+shxm_id).show();
+		
+		$("#search_id_hide :input[id="+shxm_id+"]").remove();
+		//alert(shxm_id);
+		search_get_sku_by_attr();
+	}
+	//添加筛选条件
+	function search_parm_up(shxm_id,shxzh_id,shzh_mch){
+    	// 保存属性和属性名的id
+    	var hide ="<input type='hidden' name='list_av' id=\'"+shxm_id+"\' value='{\"shxm_id\":"+shxm_id+",\"shxzh_id\":"+shxzh_id+"}'/>";
+    	$("#search_id_hide").append(hide);
+    	$("#search_attr_"+shxm_id).hide();
+    	// 显示被选中属性值
+    	//'<input type="button" value="shzh_mch" onclick="search_parm_down()">'
+    	$("#search_mch_show").append('<input type="button" value=\"'+shzh_mch+'\" onclick="search_parm_down(this,'+shxm_id+')">');
+    	
+    	search_get_sku_by_attr();
+    }
+	
+	function search_get_sku_by_attr(){
+		var class_2_id = "${class_2_id}";
+		var inputs = $(":input[name='list_av']");
+		var data="";
+		$(inputs).each(function(i,json){
+			var json = json.value;
+			json = $.parseJSON(json);
+			data+="list_av["+i+"].shxm_id="+json.shxm_id+"&list_av["+i+"].shxzh_id="+json.shxzh_id+"&";
+		});
+		
+		data += "class_2_id="+class_2_id+"&order="+$("#search_order_hide input").val();
+		
+		alert(data);
+		
+ 		$.ajax({
+ 			url:"/get_sku_by_attr.do",
+ 			data:data,
+ 			success:function(data){
+ 				//alert("ok...");
+				$("#search_list_inner").html(data);
+			}
+ 		});  
+	}
+	
+	
+	function search_order(new_order){
+    	old_order = $("#search_order_hide input").val();
+    	if(new_order==old_order){
+    		new_order += " desc "; 
+    	}
+    	$("#search_order_hide").html("<input type='text' value='"+new_order+"'/>");
+    	search_get_sku_by_attr();
+    }
+	
+</script>
+<title>suser-test</title>
+</head>
+<body>
+
+	
+	${class_2_name}<br>
+	<div id="search_mch_show"></div>
+	<div id="search_id_hide"></div>
+	<div id="search_order_hide">
+		<input type="hidden" value=" order by jg "/>
+	</div>
+	<hr>
+	分类属性列表:<br>
+	<c:forEach items="${list_attr}" var="attr">
+		<div id="search_attr_${attr.id}">
+			${attr.shxm_mch}:
+			<c:forEach items="${attr.list_value}" var="val">
+				<a href="javascript:;" onclick="search_parm_up(${attr.id},${val.id},'${val.shxzh}${val.shxzh_mch}')">${val.shxzh}${val.shxzh_mch}</a>
+			</c:forEach>
+			<br>
+		</div>
+	</c:forEach>
+	<hr>
+	
+	<br>
+	<hr>
+		<a href="javascript:;" onclick="search_order(' order by jg ')">价格</a>   
+		<a href="javascript:;" onclick="search_order(' order by sku_xl ')">销量 </a>   
+		<a href="javascript:;" onclick="search_order(' order by sku.chjshj ')">上架时间</a>   
+		<a href="javascript:;" onclick="search_order(' order by plsh ')">评论数</a> 
+	<hr>
+	<br>
+	<div id="search_list_inner">
+		<jsp:include page="/WEB-INF/sale_seach_list_inner.jsp"></jsp:include>
+	</div>
+</body>
+</html>
