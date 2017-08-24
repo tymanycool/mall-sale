@@ -10,7 +10,7 @@ import com.atguigu.bean.T_MALL_USER_ACCOUNT;
 import com.atguigu.service.AddressServiceInf;
 
 public class TestAddressService {
-	@Test
+	//@Test
 	public void test(){
 		ClassPathXmlApplicationContext ioc = new ClassPathXmlApplicationContext("applicationContext.xml");
 		AddressServiceInf bean = ioc.getBean(AddressServiceInf.class);

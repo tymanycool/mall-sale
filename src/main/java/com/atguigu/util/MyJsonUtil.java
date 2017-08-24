@@ -85,5 +85,26 @@ public class MyJsonUtil {
 		return encode;
 
 	}
+	
+	public static<T> String get_json(T t) {
+		String json = new Gson().toJson(t);
+		try {
+			json = URLEncoder.encode(json, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
+	
+	public static <T> T get_obj(String json,Class<T> type) {
+		try {
+			json = URLDecoder.decode(json, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		T fromJson = new Gson().fromJson(json, type);
+		return fromJson;
+	}
+
 
 }
